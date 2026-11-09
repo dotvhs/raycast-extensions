@@ -5,6 +5,25 @@ interface AddToQueueResponse {
   msg?: string;
 }
 
+type HistoryElement = {
+  id: string;
+  title: string;
+  url: string;
+  format: string;
+  status: string;
+  size: number;
+  timestamp: number;
+  filename: string;
+  percent: number;
+  download_type: string;
+};
+
+export interface HistoryResponse {
+  done: HistoryElement[];
+  queue: HistoryElement[];
+  pending: HistoryElement[];
+}
+
 export async function addToQueue(
   url: string,
   quality: string | null = null,
@@ -59,7 +78,62 @@ export function isValidLink(testString: string) {
   return re_weburl.test(testString);
 }
 
-// export async function getHistory() {
-//   const response = await fetch("http://localhost:8081/history");
-//   return response.json();
-// }
+export async function getHistory(): Promise<HistoryResponse> {
+  const preferences = getPreferenceValues<Preferences>();
+
+  const metubeUrl = `${preferences.metubeUrl}/history`;
+  const response = await fetch(metubeUrl);
+
+  return response.json() as Promise<HistoryResponse>;
+}
+
+export async function deleteFromHistory(id: string, type: string, delete_files = false) {
+  const preferences = getPreferenceValues<Preferences>();
+
+  const body = JSON.stringify({
+    ids: [id],
+    where: type,
+    delete_files,
+  });
+
+  const metubeUrl = `${preferences.metubeUrl}/delete`;
+  const response = await fetch(metubeUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+
+  return response.json();
+}
+
+export async function retryDownload(id: string) {
+  const preferences = getPreferenceValues<Preferences>();
+
+  const body = JSON.stringify({
+    id,
+  });
+
+  const metubeUrl = `${preferences.metubeUrl}/retry`;
+  const response = await fetch(metubeUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+
+  return response.json();
+}
+
+export function formatBytes(bytes: number) {
+  if (!+bytes) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(0))} ${sizes[i]}`;
+}

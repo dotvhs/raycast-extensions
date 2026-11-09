@@ -96,20 +96,75 @@
           "value": "thumbnail"
         }
       ]
+    },
+    {
+      "name": "metubeLocation",
+      "title": "Download Folder",
+      "description": "Provide local path for downloaded files to enable access to Quick Look and Copying Files",
+      "type": "directory",
+      "required": false
+    },
+    {
+      "name": "autoRefreshHistory",
+      "title": "Refresh History",
+      "description": "Auto-refresh interval for History",
+      "type": "dropdown",
+      "required": false,
+      "default": "3",
+      "data": [
+        {
+          "title": "10 seconds",
+          "value": "10"
+        },
+        {
+          "title": "5 seconds",
+          "value": "5"
+        },
+        {
+          "title": "3 seconds",
+          "value": "3"
+        },
+        {
+          "title": "2 seconds",
+          "value": "2"
+        },
+        {
+          "title": "1 second",
+          "value": "1"
+        },
+        {
+          "title": "Disabled",
+          "value": "off"
+        }
+      ]
+    },
+    {
+      "name": "showFavicons",
+      "description": "Displays favicon for each element in the History",
+      "type": "checkbox",
+      "label": "Show Favicons",
+      "default": true,
+      "required": false
     }
   ],
   "commands": [
     {
-      "name": "clipboard-to-metube",
       "title": "Clipboard to MeTube",
       "description": "Sends content of clipboard to MeTube",
+      "name": "clipboard-to-metube",
       "mode": "no-view"
     },
     {
-      "mode": "view",
-      "name": "add-to-metube",
+      "title": "Add to MeTube",
       "description": "Add url to MeTube through a form",
-      "title": "Add to MeTube"
+      "name": "add-to-metube",
+      "mode": "view"
+    },
+    {
+      "title": "Show History",
+      "description": "Add url to MeTube through a form",
+      "name": "history-metube",
+      "mode": "view"
     }
   ],
   "dependencies": {
